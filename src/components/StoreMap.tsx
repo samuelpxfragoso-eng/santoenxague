@@ -1,39 +1,42 @@
-import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
+import { motion } from 'motion/react';
 
-const API_KEY = process.env.GOOGLE_MAPS_PLATFORM_KEY || '';
-const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
+const UNIT_MAPS = [
+  { 
+    name: "Unidade Posto", 
+    src: "https://res.cloudinary.com/ltukueen/image/upload/v1784404993/WhatsApp_Image_2026-07-18_at_5.01.57_PM_g1q4sd.jpg",
+    link: "https://www.google.com/maps/search/?api=1&query=-29.7724023,-57.0502608"
+  },
+  { 
+    name: "Unidade Centro", 
+    src: "https://res.cloudinary.com/ltukueen/image/upload/v1784404993/WhatsApp_Image_2026-07-18_at_5.01.58_PM_ga21a7.jpg",
+    link: "https://www.google.com/maps/search/?api=1&query=-29.7556614,-57.0893995"
+  },
+];
 
 export default function StoreMap() {
-  if (!hasValidKey) {
-    return (
-      <div className="bg-gray-100 p-8 rounded-3xl text-center">
-        <h3 className="text-xl font-bold mb-4">Google Maps API Key Required</h3>
-        <p>Por favor, configure sua chave de API nas configurações do app.</p>
-      </div>
-    );
-  }
-
-  const locations = [
-    { name: "Unidade Centro", lat: -29.7556614, lng: -57.0893995 },
-    { name: "Unidade Posto Buffon (Imigrantes)", lat: -29.7724023, lng: -57.0502608 },
-  ];
-
   return (
-    <div className="h-[400px] w-full rounded-3xl overflow-hidden shadow-xl">
-      <APIProvider apiKey={API_KEY} version="weekly">
-        <Map
-          defaultCenter={{ lat: -29.764, lng: -57.07 }}
-          defaultZoom={13}
-          mapId="DEMO_MAP_ID"
-          internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
+    <div className="grid md:grid-cols-2 gap-8 w-full p-4">
+      {UNIT_MAPS.map((unit) => (
+        <motion.div
+          key={unit.name}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-500/20 hover:shadow-purple-500/50 transition-shadow duration-300"
         >
-          {locations.map((loc) => (
-            <AdvancedMarker key={loc.name} position={{ lat: loc.lat, lng: loc.lng }} title={loc.name}>
-              <Pin background="#7e22ce" glyphColor="#fff" />
-            </AdvancedMarker>
-          ))}
-        </Map>
-      </APIProvider>
+          <a href={unit.link} target="_blank" rel="noreferrer">
+            <img 
+              src={unit.src} 
+              alt={unit.name} 
+              className="w-full h-80 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex flex-col justify-end">
+              <h3 className="text-white text-xl font-bold">{unit.name}</h3>
+              <p className="text-white/80 text-sm">Clique para ver como chegar</p>
+            </div>
+          </a>
+        </motion.div>
+      ))}
     </div>
   );
 }
